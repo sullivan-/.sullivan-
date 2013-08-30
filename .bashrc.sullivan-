@@ -1,0 +1,48 @@
+# this is a machine-independent .bashrc for sullivan-
+#
+# i just source this from the .bashrc that comes with OS
+
+alias ls='ls -CF'
+
+# path for stuff i always put in $HOME/local
+export SCALA_HOME=$HOME/local/scala
+export PATH=$PATH:$SCALA_HOME/bin
+export PATH=$PATH:$HOME/local/sbt/bin
+
+# prompt -- an approximation of what i really want ..
+# [what he really wants is two-dir-depth pwd [\W]]
+PS1=":\h:\W:\!:"
+
+# generally useful exports
+export EDITOR="emacs "
+export FIGNORE=.class:.o:~
+export HISTCONTROL=ignoreboth
+export LESS="-j2 -M"
+export PAGER=less
+export VISUAL="emacs -nw"
+
+# generally useful aliases
+alias cal8='cal 2008'
+alias cal9='cal 2009'
+alias cal0='cal 2010'
+alias cd..='cd ..'
+alias dirs='dirs -v'
+alias e='emacs -nw'
+alias f='finger'
+alias h='history'
+alias ls='ls -CF'
+alias srcrc='source $HOME/.bashrc'
+alias mpage='mpage -2UHP'
+alias sshw='ssh sullivan@gpb47-6f1.broadinstitute.org'
+alias sftpw='sftp sullivan@gpb47-6f1.broadinstitute.org'
+alias screent='screen -c /home/sullymandias/.screenrc.toolkit -dR toolkit'
+alias scrent='screent'
+alias tags='ctags -eR'
+
+# generally useful functions
+function pushd { builtin pushd $* > /dev/null && dirs ; }
+function popd  { builtin popd  $* > /dev/null && dirs ; }
+function cvsmod {
+    dir=$1
+    cvs update $dir 2>&1 | egrep "^[ACMRU]"
+}

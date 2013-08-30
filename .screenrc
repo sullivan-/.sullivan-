@@ -1,0 +1,29 @@
+# ^a is too important to me to remap
+escape ^zz
+
+# window 0 is my standard bash shell
+screen
+title bash
+
+# window 1 is for emacs
+screen emacs -nw
+
+# build space
+screen
+title build
+
+# for when im jumping around dirs. i reserve window 0 dirstack for
+# within project
+screen
+title extra
+
+# ssh foreign host
+screen
+title server
+
+# set the previous window to emacs, so i get what i want the first
+# time i do ^z^z
+select 1
+
+# set the current window to bash
+select 0
