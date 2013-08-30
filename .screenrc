@@ -27,3 +27,7 @@ select 1
 
 # set the current window to bash
 select 0
+
+# random crap
+defscrollback 50000
+shell -$SHELL
