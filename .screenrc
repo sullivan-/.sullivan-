@@ -12,6 +12,8 @@ screen emacs -nw
 screen
 title build
 
+screen svntr login jsullivan
+
 # for when im jumping around dirs. i reserve window 0 dirstack for
 # within project
 screen

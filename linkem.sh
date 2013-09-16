@@ -6,6 +6,6 @@ for s in .bashrc.sullivan- .emacs.sullivan- .screenrc ; do
 done
 
 # dirs
-for s in .emacs.d ; do
+for s in .emacs.d.sullivan- ; do
     test -d $HOME/$s || ln -s `pwd`/$s $HOME/$s
 done

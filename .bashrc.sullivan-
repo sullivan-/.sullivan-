@@ -33,10 +33,6 @@ alias h='history'
 alias ls='ls -CF'
 alias srcrc='source $HOME/.bashrc'
 alias mpage='mpage -2UHP'
-alias sshw='ssh sullivan@gpb47-6f1.broadinstitute.org'
-alias sftpw='sftp sullivan@gpb47-6f1.broadinstitute.org'
-alias screent='screen -c /home/sullymandias/.screenrc.toolkit -dR toolkit'
-alias scrent='screent'
 alias tags='ctags -eR'
 
 # generally useful functions

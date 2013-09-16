@@ -7,8 +7,16 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-(add-to-list 'load-path "~/emacs.d/scala-emacs-mode")
-(require 'scala-mode-auto)
+; enabling Chrome "Edit with Emacs" plugin
+; to launch the server: M-x edit-server-start
+(add-to-list 'load-path "~/.emacs.d")
+(require 'edit-server)
+
+(when (and (require 'edit-server nil t) (fboundp 'daemonp) (daemonp))
+  (edit-server-start))
+
+(add-to-list 'load-path "~/.emacs.d.sullivan-/scala-emacs-mode")
+;(require 'scala-mode-auto)
 
 (setq auto-mode-alist
   (append '(("\\.groovy\\'" . jde-mode)) auto-mode-alist))
@@ -33,11 +41,13 @@
 
 (defun my-text-mode () (auto-fill-mode))
 
+(global-set-key "\C-X M" 'magit-status)
+(global-set-key "\C-X G" 'goto-line)
+(global-set-key "\C-X I" 'indent-region)
+
 (define-key ctl-x-map "\^M" 'magit-status)
-(define-key ctl-x-map "\^K" 'kill-compilation)
 (define-key ctl-x-map "\^G" 'goto-line)
 (define-key ctl-x-map "\^I" 'indent-region)
-(define-key ctl-x-map "\^P" 'pc-keyboard)
 
 (put 'downcase-region 'disabled t)
 
@@ -51,6 +61,7 @@
 	  (function (lambda ()
 		      (setq c-auto-newline nil)
 		      (setq c-basic-offset 4)
+		      (setq indent-tabs-mode nil)
 		      )))
 
 (put 'upcase-region 'disabled nil)
