@@ -58,11 +58,11 @@
 (display-time)
 
 (add-hook 'java-mode-hook
-	  (function (lambda ()
-		      (setq c-auto-newline nil)
-		      (setq c-basic-offset 4)
-		      (setq indent-tabs-mode nil)
-		      )))
+(function (lambda ()
+            (c-set-offset 'substatement-open 0)
+            (setq c-auto-newline nil)
+            (setq c-basic-offset 4)
+            (setq indent-tabs-mode nil))))
 
 (put 'upcase-region 'disabled nil)
 
