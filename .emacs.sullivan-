@@ -15,8 +15,8 @@
 (when (and (require 'edit-server nil t) (fboundp 'daemonp) (daemonp))
   (edit-server-start))
 
-(add-to-list 'load-path "~/.emacs.d.sullivan-/scala-emacs-mode")
-;(require 'scala-mode-auto)
+(add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
+(require 'scala-mode-auto)
 
 (setq auto-mode-alist
   (append '(("\\.groovy\\'" . jde-mode)) auto-mode-alist))
