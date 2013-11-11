@@ -7,13 +7,7 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-; enabling Chrome "Edit with Emacs" plugin
-; to launch the server: M-x edit-server-start
-(add-to-list 'load-path "~/.emacs.d")
-(require 'edit-server)
-
-(when (and (require 'edit-server nil t) (fboundp 'daemonp) (daemonp))
-  (edit-server-start))
+;; TODO: Magit
 
 (add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
 (require 'scala-mode-auto)
