@@ -7,7 +7,10 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-;; TODO: Magit
+(require 'package)
+
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 (add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
 (require 'scala-mode-auto)
