@@ -1,5 +1,9 @@
+# to be included from your base .gitconfig file like so:
+# [include]
+#	path = ~/.gitconfig.sullivan-
+
 [user]
-        email = jsullivan@thunderhead.com
+        email = john.sullivan.mscs@gmail.com
         name = John Sullivan
 [merge]
         tool = ediff
