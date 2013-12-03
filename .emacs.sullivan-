@@ -30,7 +30,6 @@
       completion-ignore-case t
       comment-start "# "  ; I want the space there, for fundamental mode
       comment-end ""
-      compile-command "make -k " ; as things should be  --jsull
       text-mode-hook 'my-text-mode
       default-major-mode 'text-mode
       dabbrev-case-fold-search nil
@@ -65,11 +64,6 @@
 
 ; turn on syntax hilighting
 ;(global-font-lock-mode 1)
-
-; use groovy-mode when file ends in .groovy or has #!/bin/groovy at start
-;(autoload 'groovy-mode "groovy-mode" "Groovy editing mode." t)
-(add-to-list 'auto-mode-alist '("\.groovy$" . java-mode))
-(add-to-list 'interpreter-mode-alist '("groovy" . java-mode))
 
 ; stuff from http://www.joegrossberg.com/dotemacs.html
 (setq require-final-newline t)
