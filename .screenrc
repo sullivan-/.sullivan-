@@ -1,3 +1,9 @@
+# default amount of scrollback is insufficient. moar scrollback!
+defscrollback 50000
+
+# give me a login shell for new screens
+shell -$SHELL
+
 # ^a is too important to me to remap
 escape ^zz
 
@@ -27,7 +33,3 @@ select 1
 
 # set the current window to bash
 select 0
-
-# random crap
-defscrollback 50000
-shell -$SHELL
