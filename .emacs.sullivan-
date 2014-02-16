@@ -7,10 +7,12 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-(require 'package)
-
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'load-path "~/.emacs.d.sullivan-/git-modes")
+(add-to-list 'load-path "~/.emacs.d.sullivan-/magit")
+(eval-after-load 'info
+  '(progn (info-initialize)
+          (add-to-list 'Info-directory-list "~/.emacs.d.sullivan-/magit/")))
+(require 'magit)
 
 (add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
 (require 'scala-mode-auto)
