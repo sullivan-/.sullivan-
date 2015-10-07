@@ -7,24 +7,26 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-(add-to-list 'load-path "~/.emacs.d.sullivan-/git-modes")
-(add-to-list 'load-path "~/.emacs.d.sullivan-/magit")
-(eval-after-load 'info
-  '(progn (info-initialize)
-          (add-to-list 'Info-directory-list "~/.emacs.d.sullivan-/magit/")))
-(require 'magit)
+; Okay, using Melpa. is that okay with you?
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             (package-initialize)
+             (when (not package-archive-contents)
+             (package-refresh-contents))
 
+; am i still using this?
 (add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
 (require 'scala-mode-auto)
-
-(setq auto-mode-alist
-  (append '(("\\.groovy\\'" . jde-mode)) auto-mode-alist))
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
 ;; Make all yes-or-no questions as y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;;; When opening a file that is a symbolic link, don't ask whether I
+;;; want to follow the link. Just do it
+(setq find-file-visit-truename t)
+
+; no tabs!
 (setq-default indent-tabs-mode nil)
 
 (setq inhibit-startup-message t
@@ -39,15 +41,13 @@
 
 (defun my-text-mode () (auto-fill-mode))
 
-(global-set-key "\C-X M" 'magit-status)
-(global-set-key "\C-X G" 'goto-line)
-(global-set-key "\C-X I" 'indent-region)
+(global-set-key "\C-XM" 'magit-status)
+(global-set-key "\C-XG" 'goto-line)
+(global-set-key "\C-XI" 'indent-region)
 
 (define-key ctl-x-map "\^M" 'magit-status)
 (define-key ctl-x-map "\^G" 'goto-line)
 (define-key ctl-x-map "\^I" 'indent-region)
-
-(put 'downcase-region 'disabled t)
 
 ; expand filenames in minibuffer
 (load "mbexpand" t t)
@@ -55,6 +55,7 @@
 ; display time of day during session
 (display-time)
 
+; Java?!
 (add-hook 'java-mode-hook
 (function (lambda ()
             (c-set-offset 'substatement-open 0)
@@ -62,18 +63,9 @@
             (setq c-basic-offset 4)
             (setq indent-tabs-mode nil))))
 
+; OK, so upcasing region is OK, but downcasing is not?!
+(put 'downcase-region 'disabled t)
 (put 'upcase-region 'disabled nil)
-
-; turn on syntax hilighting
-;(global-font-lock-mode 1)
-
-; stuff from http://www.joegrossberg.com/dotemacs.html
-(setq require-final-newline t)
-;(set-default-font "-misc-fixed-medium-r-normal-*-18-200-*-*-c-*-koi8-r")
-;(set-default-font "-adobe-courier-medium-r-normal--24-*-75-75-m-150-iso10646-1")
-;(set-foreground-color "green")
-;(set-background-color "black")
-;(set-cursor-color "#ff0000")
 
 ;;;; ido stuff - autocompletion for switching buffers and finding files
 
@@ -101,3 +93,26 @@
 ;; when using ido, the confirmation is rather annoying...
 (setq confirm-nonexistent-file-or-buffer nil)
 (ido-mode 'both) ;; for buffers and files
+
+
+;;;;;; trying to set up ENSIME:
+
+;; If necessary, make sure "sbt" and "scala" are in the PATH environment
+;; (setenv "PATH" (concat "/path/to/sbt/bin:" (getenv "PATH")))
+;; (setenv "PATH" (concat "/path/to/scala/bin:" (getenv "PATH")))
+;;
+;; On Macs, it might be a safer bet to use exec-path instead of PATH, for instance:
+;; (setq exec-path (append exec-path '("/usr/local/bin")))
+
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+
+;; OPTIONAL
+;; there are some great Scala yasnippets, browse through:
+;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
+(add-hook 'scala-mode-hook #'yas-minor-mode)
+;; but company-mode / yasnippet conflict. Disable TAB in company-mode
+;; with
+(define-key company-active-map [tab] nil)
+
+(require 'magit)
