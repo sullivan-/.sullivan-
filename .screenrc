@@ -1,8 +1,10 @@
 # default amount of scrollback is insufficient. moar scrollback!
 defscrollback 50000
 
+# i commented this one out because it is putting me in $HOME on new
+# screen windows, instead of $PWD:
 # give me a login shell for new screens
-shell -$SHELL
+#shell -$SHELL
 
 # ^a is too important to me to remap
 escape ^zz
@@ -16,7 +18,7 @@ screen emacs -nw
 
 # build space
 screen
-title build
+title sbt
 
 # for when im jumping around dirs. i reserve window 0 dirstack for
 # within project
@@ -25,7 +27,7 @@ title extra
 
 # ssh foreign host
 screen
-title server
+title mongo
 
 # set the previous window to emacs, so i get what i want the first
 # time i do ^z^z
