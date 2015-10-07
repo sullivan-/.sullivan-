@@ -4,10 +4,7 @@
 
 alias ls='ls -CF'
 
-# path for stuff i always put in $HOME/local
-export SCALA_HOME=$HOME/local/scala
-export PATH=$PATH:$SCALA_HOME/bin
-export PATH=$PATH:$HOME/local/sbt/bin
+export PATH=$PATH:/usr/local/bin
 
 # prompt -- an approximation of what i really want ..
 # [what he really wants is two-dir-depth pwd [\W]]
@@ -34,6 +31,7 @@ alias ls='ls -CF'
 alias srcrc='source $HOME/.bashrc'
 alias mpage='mpage -2UHP'
 alias tags='ctags -eR'
+alias sbt-debug='SBT_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" sbt'
 
 # generally useful functions
 function pushd { builtin pushd $* > /dev/null && dirs ; }
