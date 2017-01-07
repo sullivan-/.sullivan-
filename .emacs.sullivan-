@@ -7,17 +7,35 @@
 ; 
 ; some code thanks to {eb,bill}@cs.umb.edu
 
-; Okay, using Melpa. is that okay with you?
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-             (package-initialize)
-             (when (not package-archive-contents)
-             (package-refresh-contents))
+(setq
+ inhibit-startup-screen t
+ create-lockfiles nil
+ make-backup-files nil
+ column-number-mode t
+ scroll-error-top-bottom t
+ show-paren-delay 0.5
+ use-package-always-ensure t
+ sentence-end-double-space nil)
 
-; am i still using this?
-(add-to-list 'load-path "~/.emacs.d.sullivan-/emacs-scala-mode")
-(require 'scala-mode-auto)
+(require 'package)
+(setq
+ package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+		    ("org" . "http://orgmode.org/elpa/")
+		    ("melpa" . "http://melpa.org/packages/")
+		    ("melpa-stable" . "http://stable.melpa.org/packages/"))
+ package-archive-priorities '(("melpa-stable" . 1)))
+
+(package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(package-install 'use-package)
+(require 'use-package)
+
+(use-package scala-mode
+  :interpreter
+    ("scala" . scala-mode))
 
 ;; Make all yes-or-no questions as y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -41,6 +59,7 @@
 
 (defun my-text-mode () (auto-fill-mode))
 
+(global-set-key (kbd "C-x c") 'comment-region)
 (global-set-key "\C-XM" 'magit-status)
 (global-set-key "\C-XG" 'goto-line)
 (global-set-key "\C-XI" 'indent-region)
@@ -66,6 +85,9 @@
 ; OK, so upcasing region is OK, but downcasing is not?!
 (put 'downcase-region 'disabled t)
 (put 'upcase-region 'disabled nil)
+
+(global-auto-revert-mode)
+(column-number-mode)
 
 ;;;; ido stuff - autocompletion for switching buffers and finding files
 
@@ -106,13 +128,46 @@
 
 (require 'ensime)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(add-hook 'scala-mode-hook
+          (lambda ()
+            (define-key ensime-mode-map (kbd "M-.") nil)
+            ; not happy with these keybindings maybe, but just trying
+            ; to keep the commands available for now:                        
+            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
+            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
+            ))
+
+;(define-key ensime-mode-map [("M-.")] find-tag)
+;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
+
+;; http://stackoverflow.com/questions/21776466/how-to-make-enter-do-go-to-the-selected-type-or-method-when-using-ensime-global
+(define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
+
 
 ;; OPTIONAL
 ;; there are some great Scala yasnippets, browse through:
 ;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
+
 (add-hook 'scala-mode-hook #'yas-minor-mode)
-;; but company-mode / yasnippet conflict. Disable TAB in company-mode
-;; with
-(define-key company-active-map [tab] nil)
 
 (require 'magit)
+
+(defun disable-magit-highlight-in-buffer ()
+  (face-remap-add-relative 'magit-item-highlight '()))
+
+(add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer)
+
+;; change magit diff colors
+;(eval-after-load 'magit
+;  '(custom-set-faces
+;    '(magit-diff-add ((t (:foreground "#149914" :background nil :inherit nil))))
+;    '(magit-diff-def ((t (:foreground "#991414" :background nil :inherit nil))))))
+
+;  (progn
+;     (set-face-foreground 'magit-diff-add "green3")
+;     (set-face-foreground 'magit-diff-del "red3")
+;     (when (not window-system)
+;       (set-face-background 'magit-item-highlight "black"))))
+
+
+  
