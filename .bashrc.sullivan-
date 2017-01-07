@@ -32,6 +32,7 @@ alias srcrc='source $HOME/.bashrc'
 alias mpage='mpage -2UHP'
 alias tags='ctags -eR'
 alias sbt-debug='SBT_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" sbt'
+alias grep-todo='clear ; grep -Rn --exclude TAGS --exclude .gitignore --exclude-dir .git --exclude-dir target TODO . | grep -v "TODO pt"'
 
 # generally useful functions
 function pushd { builtin pushd $* > /dev/null && dirs ; }
