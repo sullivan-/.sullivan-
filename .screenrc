@@ -20,14 +20,14 @@ screen emacs -nw
 screen
 title sbt
 
+# db connect
+screen
+title db
+
 # for when im jumping around dirs. i reserve window 0 dirstack for
 # within project
 screen
 title extra
-
-# ssh foreign host
-screen
-title mongo
 
 # set the previous window to emacs, so i get what i want the first
 # time i do ^z^z
