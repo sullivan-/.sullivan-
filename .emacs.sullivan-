@@ -33,10 +33,6 @@
 (package-install 'use-package)
 (require 'use-package)
 
-(use-package scala-mode
-  :interpreter
-    ("scala" . scala-mode))
-
 ;; Make all yes-or-no questions as y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -117,7 +113,13 @@
 (ido-mode 'both) ;; for buffers and files
 
 
-;;;;;; trying to set up ENSIME:
+;;;; scala
+
+(use-package scala-mode :interpreter ("scala" . scala-mode))
+
+(setq scala-indent:use-javadoc-style t)
+(setq max-lisp-eval-depth 50000)
+(setq max-specpdl-size 5000)
 
 ;; If necessary, make sure "sbt" and "scala" are in the PATH environment
 ;; (setenv "PATH" (concat "/path/to/sbt/bin:" (getenv "PATH")))
@@ -126,22 +128,21 @@
 ;; On Macs, it might be a safer bet to use exec-path instead of PATH, for instance:
 ;; (setq exec-path (append exec-path '("/usr/local/bin")))
 
-(require 'ensime)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-(add-hook 'scala-mode-hook
-          (lambda ()
-            (define-key ensime-mode-map (kbd "M-.") nil)
-            ; not happy with these keybindings maybe, but just trying
-            ; to keep the commands available for now:                        
-            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
-            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
-            ))
+;(require 'ensime)
+;(add-hook 'scala-mode-hook
+;          (lambda ()
+;            (define-key ensime-mode-map (kbd "M-.") nil)
+;            ; not happy with these keybindings maybe, but just trying
+;            ; to keep the commands available for now:                        
+;            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
+;            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
+;            ))
 
 ;(define-key ensime-mode-map [("M-.")] find-tag)
 ;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
 
 ;; http://stackoverflow.com/questions/21776466/how-to-make-enter-do-go-to-the-selected-type-or-method-when-using-ensime-global
-(define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
+;(define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
 
 
 ;; OPTIONAL
@@ -149,6 +150,9 @@
 ;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
 
 (add-hook 'scala-mode-hook #'yas-minor-mode)
+
+
+;;;; magit stuff
 
 (require 'magit)
 
