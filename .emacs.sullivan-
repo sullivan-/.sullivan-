@@ -1,11 +1,14 @@
-; .emacs.sullivan-
-;
-; a .emacs to use anywhere. intended to be loaded from the real .emacs
-; file like so:
-; 
-; (load "~/.emacs.sullivan-")
-; 
-; some code thanks to {eb,bill}@cs.umb.edu
+;; -*- mode: lisp -*-
+;;
+;; .emacs.sullivan-
+;;
+;; a .emacs to use anywhere. intended to be loaded from the real .emacs file like so:
+;; 
+;; (load "~/.emacs.sullivan-")
+
+;; hints:
+;; M-C-x (eval-defun)
+
 
 (setq
  inhibit-startup-screen t
@@ -36,22 +39,33 @@
 ;; Make all yes-or-no questions as y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;;; When opening a file that is a symbolic link, don't ask whether I
-;;; want to follow the link. Just do it
-(setq find-file-visit-truename t)
-
-; no tabs!
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil) ; no tabs
 
 (setq inhibit-startup-message t
+      find-file-visit-truename t    ; follow sym links without asking
       manual-program "man"
       completion-ignore-case t
-      comment-start "# "  ; I want the space there, for fundamental mode
+      comment-start "# "            ; i want the space there, for fundamental mode
       comment-end ""
       text-mode-hook 'my-text-mode
       default-major-mode 'text-mode
       dabbrev-case-fold-search nil
 )
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (setq show-trailing-whitespace t)
+            (show-paren-mode)
+            ;; (focus-mode)
+            ;; (rainbow-mode)
+            (prettify-symbols-mode)
+            (eldoc-mode)
+            ;; (flycheck-mode)
+            (yas-minor-mode)
+            ;; (company-mode)
+            ;; (smartparens-strict-mode)
+            ;; (rainbow-delimiters-mode)
+            ))
 
 (defun my-text-mode () (auto-fill-mode))
 
@@ -64,13 +78,12 @@
 (define-key ctl-x-map "\^G" 'goto-line)
 (define-key ctl-x-map "\^I" 'indent-region)
 
-; expand filenames in minibuffer
+;; expand filenames in minibuffer
 (load "mbexpand" t t)
 
-; display time of day during session
+;; display time of day during session
 (display-time)
 
-; Java?!
 (add-hook 'java-mode-hook
 (function (lambda ()
             (c-set-offset 'substatement-open 0)
@@ -78,7 +91,7 @@
             (setq c-basic-offset 4)
             (setq indent-tabs-mode nil))))
 
-; OK, so upcasing region is OK, but downcasing is not?!
+;; OK, so upcasing region is OK, but downcasing is not?!
 (put 'downcase-region 'disabled t)
 (put 'upcase-region 'disabled nil)
 
@@ -110,46 +123,44 @@
 
 ;; when using ido, the confirmation is rather annoying...
 (setq confirm-nonexistent-file-or-buffer nil)
-(ido-mode 'both) ;; for buffers and files
-
+(ido-mode 'both) ; for buffers and files
 
 ;;;; scala
 
 (use-package scala-mode :interpreter ("scala" . scala-mode))
 
-(setq scala-indent:use-javadoc-style t)
-(setq max-lisp-eval-depth 50000)
-(setq max-specpdl-size 5000)
+;; turn these on for scala-mode problems with super complicated scala files:
+;; (setq max-lisp-eval-depth 50000)
+;; (setq max-specpdl-size 5000)
 
-;; If necessary, make sure "sbt" and "scala" are in the PATH environment
-;; (setenv "PATH" (concat "/path/to/sbt/bin:" (getenv "PATH")))
-;; (setenv "PATH" (concat "/path/to/scala/bin:" (getenv "PATH")))
-;;
-;; On Macs, it might be a safer bet to use exec-path instead of PATH, for instance:
-;; (setq exec-path (append exec-path '("/usr/local/bin")))
+(add-hook 'scala-mode-hook
+          (lambda ()
 
-;(require 'ensime)
-;(add-hook 'scala-mode-hook
-;          (lambda ()
-;            (define-key ensime-mode-map (kbd "M-.") nil)
-;            ; not happy with these keybindings maybe, but just trying
-;            ; to keep the commands available for now:                        
-;            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
-;            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
-;            ))
+	    ;; don't override M-. with ensime command. still using tags here tyvm
+            (define-key ensime-mode-map (kbd "M-.") nil)
 
-;(define-key ensime-mode-map [("M-.")] find-tag)
-;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
+	    ;; make tab indent even if i am in the middle of the line
+	    (setq-default tab-always-indent t)
+
+	    ;; aligns asterix in multi-line comment under first line
+	    (setq scala-indent:use-javadoc-style t)
+
+;;            ; not happy with these keybindings maybe, but just trying
+;;            ; to keep the commands available for now:                        
+;;            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
+;;            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
+	    ))
+
+;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
+(add-hook 'scala-mode-hook #'yas-minor-mode)
+
+(require 'ensime)
+
+;;(define-key ensime-mode-map [("M-.")] find-tag)
+;;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
 
 ;; http://stackoverflow.com/questions/21776466/how-to-make-enter-do-go-to-the-selected-type-or-method-when-using-ensime-global
-;(define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
-
-
-;; OPTIONAL
-;; there are some great Scala yasnippets, browse through:
-;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
-
-(add-hook 'scala-mode-hook #'yas-minor-mode)
+;; (define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
 
 
 ;;;; magit stuff
@@ -162,16 +173,16 @@
 (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer)
 
 ;; change magit diff colors
-;(eval-after-load 'magit
-;  '(custom-set-faces
-;    '(magit-diff-add ((t (:foreground "#149914" :background nil :inherit nil))))
-;    '(magit-diff-def ((t (:foreground "#991414" :background nil :inherit nil))))))
+;;(eval-after-load 'magit
+;;  '(custom-set-faces
+;;    '(magit-diff-add ((t (:foreground "#149914" :background nil :inherit nil))))
+;;    '(magit-diff-def ((t (:foreground "#991414" :background nil :inherit nil))))))
 
-;  (progn
-;     (set-face-foreground 'magit-diff-add "green3")
-;     (set-face-foreground 'magit-diff-del "red3")
-;     (when (not window-system)
-;       (set-face-background 'magit-item-highlight "black"))))
+;;  (progn
+;;     (set-face-foreground 'magit-diff-add "green3")
+;;     (set-face-foreground 'magit-diff-del "red3")
+;;     (when (not window-system)
+;;       (set-face-background 'magit-item-highlight "black"))))
 
 
   
