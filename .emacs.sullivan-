@@ -1,4 +1,4 @@
-;; -*- mode: lisp -*-
+;; -*- mode: lisp-interaction -*-
 ;;
 ;; .emacs.sullivan-
 ;;
@@ -9,16 +9,29 @@
 ;; hints:
 ;; M-C-x (eval-defun)
 
-
 (setq
- inhibit-startup-screen t
- create-lockfiles nil
- make-backup-files nil
- column-number-mode t
- scroll-error-top-bottom t
- show-paren-delay 0.5
+ column-number-mode        t
+ comment-end               ""
+ comment-start             "# "       ; i want the space there, for fundamental mode
+ completion-ignore-case    t
+ create-lockfiles          nil
+ dabbrev-case-fold-search  nil
+ default-major-mode        'text-mode
+ find-file-visit-truename  t          ; follow sym links without asking
+ inhibit-startup-message   t
+ inhibit-startup-screen    t
+ make-backup-files         nil
+ manual-program            "man"
+ scroll-error-top-bottom   t
+ sentence-end-double-space nil
+ show-paren-delay          0.5
+ text-mode-hook            'auto-fill-mode
  use-package-always-ensure t
- sentence-end-double-space nil)
+)
+
+(setq-default
+ indent-tabs-mode          nil ; no tabs
+ fill-column               100)
 
 (require 'package)
 (setq
@@ -39,19 +52,6 @@
 ;; Make all yes-or-no questions as y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(setq-default indent-tabs-mode nil) ; no tabs
-
-(setq inhibit-startup-message t
-      find-file-visit-truename t    ; follow sym links without asking
-      manual-program "man"
-      completion-ignore-case t
-      comment-start "# "            ; i want the space there, for fundamental mode
-      comment-end ""
-      text-mode-hook 'my-text-mode
-      default-major-mode 'text-mode
-      dabbrev-case-fold-search nil
-)
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq show-trailing-whitespace t)
@@ -66,8 +66,6 @@
             ;; (smartparens-strict-mode)
             ;; (rainbow-delimiters-mode)
             ))
-
-(defun my-text-mode () (auto-fill-mode))
 
 (global-set-key (kbd "C-x c") 'comment-region)
 (global-set-key "\C-XM" 'magit-status)
@@ -139,6 +137,14 @@
 	    ;; don't override M-. with ensime command. still using tags here tyvm
             (define-key ensime-mode-map (kbd "M-.") nil)
 
+            ;; tab always means indent
+            (define-key ensime-mode-map (kbd "TAB") 'indent-according-to-mode)
+
+            ;; TODO figure out how to get indent-region
+            ;;(define-key ensime-mode-map (kbd "TAB") 'indent-region)
+
+            (define-key ensime-mode-map (kbd "C-c y") 'yas-expand)
+
 	    ;; make tab indent even if i am in the middle of the line
 	    (setq-default tab-always-indent t)
 
@@ -146,15 +152,18 @@
 	    (setq scala-indent:use-javadoc-style t)
 
 ;;            ; not happy with these keybindings maybe, but just trying
-;;            ; to keep the commands available for now:                        
+;;            ; to keep the commands available for now:
 ;;            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
 ;;            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
 	    ))
 
-;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/scala-mode
+(require 'ensime)
+
 (add-hook 'scala-mode-hook #'yas-minor-mode)
 
-(require 'ensime)
+(require 'yasnippet)
+(yas-global-mode 1)
+(setq yas-snippet-dirs '("~/.emacs.d.sullivan-/scala-snippets"))
 
 ;;(define-key ensime-mode-map [("M-.")] find-tag)
 ;;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
@@ -184,5 +193,15 @@
 ;;     (when (not window-system)
 ;;       (set-face-background 'magit-item-highlight "black"))))
 
+(use-package etags-select :commands etags-select-find-tag)
 
-  
+(scala-mode:goto-start-of-code)
+
+(defun scala-mode-newline-comments ()
+  "Custom newline appropriate for `scala-mode'."
+  ;; shouldn't this be in a post-insert hook?
+  (interactive)
+  (newline-and-indent)
+  (scala-indent:insert-asterisk-on-multiline-comment))
+
+(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)

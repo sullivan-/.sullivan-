@@ -6,7 +6,7 @@
 --regex-scala=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*object[ \t]+([a-zA-Z0-9_]+)/\6/c,objects/
 --regex-scala=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*case class[ \t]+([a-zA-Z0-9_]+)/\6/c,classes/
 --regex-scala=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*case object[ \t]+([a-zA-Z0-9_]+)/\6/c,objects/
---regex-scala=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*trait[ \t]+([a-zA-Z0-9_]+)/\6/t,traits/
+--regex-scala=/^[ \t]*(@[a-zA-Z0-9_\.]+)[ \t]+((abstract|final|sealed|implicit|lazy)[ \t]*)*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*trait[ \t]+([a-zA-Z0-9_]+)/\7/t,traits/
 --regex-scala=/^[ \t]*(override)?[ \t]*(private(\[[a-zA-Z0-9_\.]+\])?|protected(\[[a-zA-Z0-9_\.]+\])?)?[ \t]*((abstract|final|sealed|implicit|lazy)?[ \t]*)def[ \t]+([a-zA-Z0-9_]+)/\7/m,methods/
 
 --regex-Scala=/(TODO)/\1/d,todo/
