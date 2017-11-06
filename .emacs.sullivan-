@@ -3,31 +3,33 @@
 ;; .emacs.sullivan-
 ;;
 ;; a .emacs to use anywhere. intended to be loaded from the real .emacs file like so:
-;; 
+;;
 ;; (load "~/.emacs.sullivan-")
 
 ;; hints:
 ;; M-C-x (eval-defun)
 
 (setq
- column-number-mode        t
- comment-end               ""
- comment-start             "# "       ; i want the space there, for fundamental mode
- completion-ignore-case    t
- create-lockfiles          nil
- dabbrev-case-fold-search  nil
- default-major-mode        'text-mode
- find-file-visit-truename  t          ; follow sym links without asking
- inhibit-startup-message   t
- inhibit-startup-screen    t
- make-backup-files         nil
- manual-program            "man"
- scroll-error-top-bottom   t
- sentence-end-double-space nil
- show-paren-delay          0.5
- text-mode-hook            'auto-fill-mode
- use-package-always-ensure t
+ column-number-mode          t
+ comment-end                 ""
+ comment-start               "# "       ; i want the space there, for fundamental mode
+ completion-ignore-case      t
+ create-lockfiles            nil
+ dabbrev-case-fold-search    nil
+ default-major-mode          'text-mode
+ find-file-visit-truename    t          ; follow sym links without asking
+ inhibit-startup-message     t
+ inhibit-startup-screen      t
+ make-backup-files           nil
+ manual-program              "man"
+ scroll-error-top-bottom     t
+ sentence-end-double-space   nil
+ show-paren-delay            0.5
+ text-mode-hook              'auto-fill-mode
+ use-package-always-ensure   t
 )
+
+(add-to-list 'exec-path "/usr/local/bin")
 
 (setq-default
  indent-tabs-mode          nil ; no tabs
@@ -99,7 +101,7 @@
 ;;;; ido stuff - autocompletion for switching buffers and finding files
 
 (require 'ido)
-(setq 
+(setq
  ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
 
  ido-ignore-buffers ;; ignore these guys
@@ -133,9 +135,13 @@
 
 (add-hook 'scala-mode-hook
           (lambda ()
+            (setq scala-indent:use-javadoc-style t)
 
 	    ;; don't override M-. with ensime command. still using tags here tyvm
             (define-key ensime-mode-map (kbd "M-.") nil)
+            (define-key ensime-mode-map (kbd "C-c .") 'ensime-edit-definition)
+
+            (define-key ensime-mode-map (kbd "C-r t") 'ensime-import-type-at-point)
 
             ;; tab always means indent
             (define-key ensime-mode-map (kbd "TAB") 'indent-according-to-mode)
@@ -151,12 +157,16 @@
 	    ;; aligns asterix in multi-line comment under first line
 	    (setq scala-indent:use-javadoc-style t)
 
+            ;;(setq ensime-sbt-perform-on-save "compile")
+
+            (setq ensime-startup-notification nil)
+
 ;;            ; not happy with these keybindings maybe, but just trying
 ;;            ; to keep the commands available for now:
-;;            (define-key ensime-mode-map (kbd "C-c q") 'ensime-edit-definition)
-;;            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
+            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
 	    ))
 
+(use-package ensime :ensure t :pin melpa)
 (require 'ensime)
 
 (add-hook 'scala-mode-hook #'yas-minor-mode)
@@ -194,6 +204,9 @@
 ;;       (set-face-background 'magit-item-highlight "black"))))
 
 (use-package etags-select :commands etags-select-find-tag)
+
+(package-install 'ggtags)
+(require 'ggtags)
 
 (scala-mode:goto-start-of-code)
 
