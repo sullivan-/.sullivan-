@@ -184,6 +184,7 @@
 
 ;;;; magit stuff
 
+(package-install 'magit)
 (require 'magit)
 
 (defun disable-magit-highlight-in-buffer ()

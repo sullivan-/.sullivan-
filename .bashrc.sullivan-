@@ -1,6 +1,7 @@
 # this is a machine-independent .bashrc for sullivan-
 #
-# i just source this from the .bashrc that comes with OS
+# i just source this from the .bashrc that comes with OS:
+# source ~/.bashrc.sullivan-
 
 alias ls='ls -CF'
 
@@ -19,12 +20,9 @@ export PAGER=less
 export VISUAL="emacs -nw"
 
 # generally useful aliases
-alias cal8='cal 2008'
-alias cal9='cal 2009'
-alias cal0='cal 2010'
 alias cd..='cd ..'
 alias dirs='dirs -v'
-alias e='emacs -nw'
+alias e='emacsclient -nw'
 alias f='finger'
 alias h='history'
 alias ls='ls -CF'
@@ -39,7 +37,6 @@ alias grep-println='clear ; grep -Rn $GREP_EXCLUDES println . | egrep -v "(killL
 # generally useful functions
 function pushd { builtin pushd $* > /dev/null && dirs ; }
 function popd  { builtin popd  $* > /dev/null && dirs ; }
-function cvsmod {
-    dir=$1
-    cvs update $dir 2>&1 | egrep "^[ACMRU]"
+function title {
+    echo -ne "\033]0;"$*"\007"
 }
