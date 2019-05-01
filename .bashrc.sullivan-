@@ -3,34 +3,36 @@
 # i just source this from the .bashrc that comes with OS:
 # source ~/.bashrc.sullivan-
 
-alias ls='ls -CF'
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-export PATH=$PATH:/usr/local/bin
+export PATH=/usr/local/bin:$PATH
 
 # prompt -- an approximation of what i really want ..
 # [what he really wants is two-dir-depth pwd [\W]]
 PS1=":\h:\W:\!:"
 
 # generally useful exports
-export EDITOR="emacs "
+export EDITOR="emacsclient "
 export FIGNORE=.class:.o:~
 export HISTCONTROL=ignoreboth
 export LESS="-j2 -M"
 export PAGER=less
 export VISUAL="emacs -nw"
+export GREP_EXCLUDES="--exclude TAGS --exclude .gitignore --exclude-dir .git --exclude-dir target --exclude-dir .ensime_cache"
 
 # generally useful aliases
+alias ls='ls -CF'
 alias cd..='cd ..'
 alias dirs='dirs -v'
 alias e='emacsclient -nw'
-alias f='finger'
 alias h='history'
 alias ls='ls -CF'
 alias srcrc='source $HOME/.bashrc'
 alias mpage='mpage -2UHP'
 alias tags='ctags -eR'
 alias sbt-debug='SBT_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" sbt'
-export GREP_EXCLUDES="--exclude TAGS --exclude .gitignore --exclude-dir .git --exclude-dir target --exclude-dir .ensime_cache"
+
 alias grep-todo='clear ; grep -Rni $GREP_EXCLUDES TODO . | egrep -v "(ToDomainModel|toDouble|TODO pt)"'
 alias grep-println='clear ; grep -Rn $GREP_EXCLUDES println . | egrep -v "(killLine.scala|replaceAll.scala|repackageImports.scala)"'
 

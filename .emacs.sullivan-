@@ -26,6 +26,7 @@
  sentence-end-double-space   nil
  show-paren-delay            0.5
  text-mode-hook              'auto-fill-mode
+ tramp-default-method        "ssh"
  use-package-always-ensure   t
 )
 
@@ -47,6 +48,12 @@
 (when (not package-archive-contents)
   (package-refresh-contents)
   (package-install 'use-package))
+
+(package-install 'ssh-agency)
+(require 'ssh-agency)
+
+(package-install 'groovy-mode)
+(require 'groovy-mode)
 
 (package-install 'use-package)
 (require 'use-package)
@@ -108,7 +115,6 @@
  '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
    "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
 
- ido-work-directory-list '("~/" "~/Downloads" "~/workspace/rnai/screening/analysis-toolkit")
  ido-case-fold  t                 ; be case-insensitive
 
  ido-enable-last-directory-history t ; remember last used dirs
@@ -116,7 +122,7 @@
  ido-max-work-file-list      50   ; remember many
  ido-use-filename-at-point nil    ; don't use filename at point (annoying)
  ido-use-url-at-point nil         ; don't use url at point (annoying)
- 
+
  ido-enable-flex-matching nil     ; don't try to be too smart
  ido-max-prospects 8              ; don't spam my minibuffer
  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
@@ -124,6 +130,8 @@
 ;; when using ido, the confirmation is rather annoying...
 (setq confirm-nonexistent-file-or-buffer nil)
 (ido-mode 'both) ; for buffers and files
+
+(setq json-reformat:indent-width 2)
 
 ;;;; scala
 
@@ -138,16 +146,13 @@
             (setq scala-indent:use-javadoc-style t)
 
 	    ;; don't override M-. with ensime command. still using tags here tyvm
-            (define-key ensime-mode-map (kbd "M-.") nil)
-            (define-key ensime-mode-map (kbd "C-c .") 'ensime-edit-definition)
+            (define-key ensime-mode-map (kbd "M-.") 'ensime-edit-definition)
+            (define-key ensime-mode-map (kdb "C-c .") 'xref-find-definitions)
 
             (define-key ensime-mode-map (kbd "C-r t") 'ensime-import-type-at-point)
 
             ;; tab always means indent
             (define-key ensime-mode-map (kbd "TAB") 'indent-according-to-mode)
-
-            ;; TODO figure out how to get indent-region
-            ;;(define-key ensime-mode-map (kbd "TAB") 'indent-region)
 
             (define-key ensime-mode-map (kbd "C-c y") 'yas-expand)
 
@@ -161,12 +166,12 @@
 
             (setq ensime-startup-notification nil)
 
-;;            ; not happy with these keybindings maybe, but just trying
-;;            ; to keep the commands available for now:
+            ; not happy with these keybindings maybe, but just trying
+            ; to keep the commands available for now:
             (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
 	    ))
 
-(use-package ensime :ensure t :pin melpa)
+(use-package ensime :ensure t :pin melpa-stable)
 (require 'ensime)
 
 (add-hook 'scala-mode-hook #'yas-minor-mode)
@@ -175,12 +180,11 @@
 (yas-global-mode 1)
 (setq yas-snippet-dirs '("~/.emacs.d.sullivan-/scala-snippets"))
 
-;;(define-key ensime-mode-map [("M-.")] find-tag)
-;;(define-key ensime-mode-map [("C-M-.")] 'ensime-edit-definition)
+(define-key scala-mode-map (kbd "M-.") 'ensime-edit-definition)
+(define-key scala-mode-map (kdb "C-c .") 'xref-find-definitions)
 
 ;; http://stackoverflow.com/questions/21776466/how-to-make-enter-do-go-to-the-selected-type-or-method-when-using-ensime-global
 ;; (define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
-
 
 ;;;; magit stuff
 
@@ -203,8 +207,6 @@
 ;;     (set-face-foreground 'magit-diff-del "red3")
 ;;     (when (not window-system)
 ;;       (set-face-background 'magit-item-highlight "black"))))
-
-(use-package etags-select :commands etags-select-find-tag)
 
 (package-install 'ggtags)
 (require 'ggtags)
