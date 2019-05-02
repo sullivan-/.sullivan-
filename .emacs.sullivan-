@@ -30,6 +30,13 @@
  use-package-always-ensure   t
 )
 
+;; iTerm2 mouse support
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
+
 (add-to-list 'exec-path "/usr/local/bin")
 
 (setq-default
@@ -70,7 +77,6 @@
             (prettify-symbols-mode)
             (eldoc-mode)
             ;; (flycheck-mode)
-            (yas-minor-mode)
             ;; (company-mode)
             ;; (smartparens-strict-mode)
             ;; (rainbow-delimiters-mode)
@@ -132,6 +138,7 @@
 (ido-mode 'both) ; for buffers and files
 
 (setq json-reformat:indent-width 2)
+(setq js-indent-level 2)
 
 ;;;; scala
 
