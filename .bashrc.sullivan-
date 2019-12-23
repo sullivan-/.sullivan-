@@ -5,6 +5,8 @@
 
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+HISTSIZE=10000000
+HISTFILESIZE=10000000
 
 export PATH=/usr/local/bin:$PATH
 
