@@ -3,7 +3,7 @@
 #	path = ~/.gitconfig.sullivan-
 
 [user]
-        email = john.sullivan.mscs@gmail.com
+        email = john.sullivan.mscs@protonmail.com
         name = John Sullivan
 [merge]
         tool = ediff
