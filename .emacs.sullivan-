@@ -9,39 +9,8 @@
 ;; hints:
 ;; M-C-x (eval-defun)
 
-(setq
- column-number-mode          t
- comment-end                 ""
- comment-start               "# "       ; i want the space there, for fundamental mode
- completion-ignore-case      t
- create-lockfiles            nil
- dabbrev-case-fold-search    nil
- default-major-mode          'text-mode
- find-file-visit-truename    t          ; follow sym links without asking
- inhibit-startup-message     t
- inhibit-startup-screen      t
- make-backup-files           nil
- manual-program              "man"
- scroll-error-top-bottom     t
- sentence-end-double-space   nil
- show-paren-delay            0.5
- text-mode-hook              'auto-fill-mode
- tramp-default-method        "ssh"
- use-package-always-ensure   t
-)
 
-;; iTerm2 mouse support
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t))
-
-(add-to-list 'exec-path "/usr/local/bin")
-
-(setq-default
- indent-tabs-mode          nil ; no tabs
- fill-column               100)
+;;;; packages
 
 (require 'package)
 (setq
@@ -65,8 +34,78 @@
 (package-install 'use-package)
 (require 'use-package)
 
-;; Make all yes-or-no questions as y-or-n
+(package-install 'ggtags) ; what's ggtags?
+(require 'ggtags)
+
+;;;; general top-level cruff
+
+(setq
+ column-number-mode          t
+ comment-end                 ""
+ comment-start               "# "       ; i want the space there, for fundamental mode
+ completion-ignore-case      t
+ create-lockfiles            nil
+ dabbrev-case-fold-search    nil
+ default-major-mode          'text-mode
+ find-file-visit-truename    t          ; follow sym links without asking
+ inhibit-startup-message     t
+ inhibit-startup-screen      t
+ make-backup-files           nil
+ manual-program              "man"
+ scroll-error-top-bottom     t
+ sentence-end-double-space   nil
+ show-paren-delay            0.5
+ text-mode-hook              'auto-fill-mode
+ tramp-default-method        "ssh"
+ use-package-always-ensure   t)
+
+(add-to-list 'exec-path "/usr/local/bin")
+
+(setq-default
+ indent-tabs-mode          nil ; no tabs
+ fill-column               100)
+
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(global-set-key (kbd "C-x c") 'comment-region)
+(global-set-key "\C-XM" 'magit-status)
+(global-set-key "\C-XG" 'goto-line)
+(global-set-key "\C-XI" 'indent-region)
+
+(define-key ctl-x-map "\^M" 'magit-status)
+(define-key ctl-x-map "\^G" 'goto-line)
+(define-key ctl-x-map "\^I" 'indent-region)
+
+(load "mbexpand" t t) ; expand filenames in minibuffer
+
+(display-time)
+(global-auto-revert-mode)
+(column-number-mode)
+
+(desktop-save-mode 1)
+
+;;;; Mac / iTerm2 support
+
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
+
+(defun pbcopy ()
+  (interactive)
+  (call-process-region (point) (mark) "pbcopy")
+  (setq deactivate-mark t))
+
+(defun pbpaste ()
+  (interactive)
+  (call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
+
+(global-set-key (kbd "C-c c") 'pbcopy)
+(global-set-key (kbd "C-c v") 'pbpaste)
+(global-set-key (kbd "C-c x") 'pbcut)
+
+;;;; elisp-mode
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
@@ -82,20 +121,7 @@
             ;; (rainbow-delimiters-mode)
             ))
 
-(global-set-key (kbd "C-x c") 'comment-region)
-(global-set-key "\C-XM" 'magit-status)
-(global-set-key "\C-XG" 'goto-line)
-(global-set-key "\C-XI" 'indent-region)
-
-(define-key ctl-x-map "\^M" 'magit-status)
-(define-key ctl-x-map "\^G" 'goto-line)
-(define-key ctl-x-map "\^I" 'indent-region)
-
-;; expand filenames in minibuffer
-(load "mbexpand" t t)
-
-;; display time of day during session
-(display-time)
+;;;; java-mode
 
 (add-hook 'java-mode-hook
 (function (lambda ()
@@ -103,13 +129,6 @@
             (setq c-auto-newline nil)
             (setq c-basic-offset 4)
             (setq indent-tabs-mode nil))))
-
-;; OK, so upcasing region is OK, but downcasing is not?!
-(put 'downcase-region 'disabled t)
-(put 'upcase-region 'disabled nil)
-
-(global-auto-revert-mode)
-(column-number-mode)
 
 ;;;; ido stuff - autocompletion for switching buffers and finding files
 
@@ -133,65 +152,69 @@
  ido-max-prospects 8              ; don't spam my minibuffer
  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
 
-;; when using ido, the confirmation is rather annoying...
 (setq confirm-nonexistent-file-or-buffer nil)
 (ido-mode 'both) ; for buffers and files
 
 (setq json-reformat:indent-width 2)
 (setq js-indent-level 2)
 
-;;;; scala
+;;;; lsp-scala
 
-(use-package scala-mode :interpreter ("scala" . scala-mode))
+;; Enable defer and ensure by default for use-package
+(setq use-package-always-defer t
+      use-package-always-ensure t)
 
-;; turn these on for scala-mode problems with super complicated scala files:
-;; (setq max-lisp-eval-depth 50000)
-;; (setq max-specpdl-size 5000)
+(use-package scala-mode :mode "\\.s\\(cala\\|bt\\)$")
 
-(add-hook 'scala-mode-hook
-          (lambda ()
-            (setq scala-indent:use-javadoc-style t)
+(add-hook
+ 'scala-mode-hook
+ (lambda ()
+   (setq scala-indent:use-javadoc-style t)
+   (setq-default tab-always-indent t)
+   (setq scala-indent:use-javadoc-style t)
+   ))
 
-	    ;; don't override M-. with ensime command. still using tags here tyvm
-            (define-key ensime-mode-map (kbd "M-.") 'ensime-edit-definition)
-            (define-key ensime-mode-map (kdb "C-c .") 'xref-find-definitions)
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map))
 
-            (define-key ensime-mode-map (kbd "C-r t") 'ensime-import-type-at-point)
+;; Enable nice rendering of diagnostics like compile errors.
+(use-package flycheck :init (global-flycheck-mode))
 
-            ;; tab always means indent
-            (define-key ensime-mode-map (kbd "TAB") 'indent-according-to-mode)
+(use-package lsp-mode :init (setq lsp-prefer-flymake nil))
 
-            (define-key ensime-mode-map (kbd "C-c y") 'yas-expand)
+(use-package lsp-ui)
 
-	    ;; make tab indent even if i am in the middle of the line
-	    (setq-default tab-always-indent t)
+(use-package company-lsp)
 
-	    ;; aligns asterix in multi-line comment under first line
-	    (setq scala-indent:use-javadoc-style t)
+(use-package lsp-scala
+  :after scala-mode
+  :demand t
+  :hook (scala-mode . lsp))
 
-            ;;(setq ensime-sbt-perform-on-save "compile")
+(setq xref-prompt-for-identifier '(not xref-find-definitions
+                                       xref-find-definitions-other-window
+                                       xref-find-definitions-other-frame
+                                       xref-find-references))
 
-            (setq ensime-startup-notification nil)
+;; some old scala stuff that probably doesnt do it anymore:
 
-            ; not happy with these keybindings maybe, but just trying
-            ; to keep the commands available for now:
-            (define-key ensime-mode-map (kbd "C-c w") 'ensime-inspect-by-path)
-	    ))
+(scala-mode:goto-start-of-code)
 
-(use-package ensime :ensure t :pin melpa-stable)
-(require 'ensime)
+(defun scala-mode-newline-comments ()
+  "Custom newline appropriate for `scala-mode'."
+  ;; shouldn't this be in a post-insert hook?
+  (interactive)
+  (newline-and-indent)
+  (scala-indent:insert-asterisk-on-multiline-comment))
 
-(add-hook 'scala-mode-hook #'yas-minor-mode)
-
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-snippet-dirs '("~/.emacs.d.sullivan-/scala-snippets"))
-
-(define-key scala-mode-map (kbd "M-.") 'ensime-edit-definition)
-(define-key scala-mode-map (kdb "C-c .") 'xref-find-definitions)
-
-;; http://stackoverflow.com/questions/21776466/how-to-make-enter-do-go-to-the-selected-type-or-method-when-using-ensime-global
-;; (define-key ensime-search-mode-map (kbd "RET") 'ensime-search-choose-current-result)
+(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
 
 ;;;; magit stuff
 
@@ -214,17 +237,3 @@
 ;;     (set-face-foreground 'magit-diff-del "red3")
 ;;     (when (not window-system)
 ;;       (set-face-background 'magit-item-highlight "black"))))
-
-(package-install 'ggtags)
-(require 'ggtags)
-
-(scala-mode:goto-start-of-code)
-
-(defun scala-mode-newline-comments ()
-  "Custom newline appropriate for `scala-mode'."
-  ;; shouldn't this be in a post-insert hook?
-  (interactive)
-  (newline-and-indent)
-  (scala-indent:insert-asterisk-on-multiline-comment))
-
-(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
